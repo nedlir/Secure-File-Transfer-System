@@ -38,15 +38,16 @@ The full project specifications can be found [here](readme/project_specification
 
 ## Communication Protocol
 
-The communication protocol is binary and runs over TCP. All numerical fields are represented as unsigned values in little-endian format. The protocol supports requests and responses between clients and the server. Messages can contain a "payload" field for various content.
+The communication protocol is binary and runs over TCP. Messages can contain a "payload" field for various content.
 
 Here is a chart flow of a registration request:
 
-![protocol-registration](readme/protocol-registration.jpg)
+<img src="readme/protocol-registration.jpg" width=50% height=50%>
+
 
 And here's what a reconnect looks like:
 
-![protocol-reconnect](readme/protocol-reconnect.jpg)
+<img src="readme/protocol-reconnect.jpg" width=50% height=50%>
 
 
 ## Encryption
