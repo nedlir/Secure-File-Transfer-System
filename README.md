@@ -1,11 +1,12 @@
-# (Semi) Secure File Transfer System 
+# (Semi) Secure File Transfer System :lock:
 
 The Secure File Transfer System is designed to facilitate secure file transfers between clients and a server. It allows clients to register in a database, exchange encryption keys, and securely send files to the server. The system operates in a client-server architecture and attempts to ensure data confidentiality and integrity during file transmission.
 
-This is the final project I completed as part of the course '[Defensive System Programming (20937)](https://www-e.openu.ac.il/courses/20937.htm)' at the Open University of Israel.
+This is the final project I completed as part of the course [Defensive System Programming (20937)](https://www-e.openu.ac.il/courses/20937.htm) at the Open University of Israel.
 
 The project implements a partially secure file transfer protocol designed for transferring relatively small files. The client is written in Python 3.9, the server is written in C++11, and the database is managed with MySQL.
 
+The full project specifications can be found [here](readme/project_specifications.pdf).
 
 ## Table of Contents
 - [Features](#features)
@@ -38,6 +39,14 @@ The project implements a partially secure file transfer protocol designed for tr
 ## Communication Protocol
 
 The communication protocol is binary and runs over TCP. All numerical fields are represented as unsigned values in little-endian format. The protocol supports requests and responses between clients and the server. Messages can contain a "payload" field for various content.
+
+Here is a chart flow of a registration request:
+
+![protocol-registration](readme/protocol-registration.jpg)
+
+And here's what a reconnect looks like:
+
+![protocol-reconnect](readme/protocol-reconnect.jpg)
 
 
 ## Encryption
