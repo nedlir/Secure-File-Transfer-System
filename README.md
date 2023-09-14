@@ -4,9 +4,9 @@ The Secure File Transfer System is designed to facilitate secure file transfers 
 
 This is the final project I completed as part of the course [Defensive System Programming (20937)](https://www-e.openu.ac.il/courses/20937.htm) at the Open University of Israel.
 
-The project implements a partially secure file transfer protocol designed for transferring relatively small files. The client is written in Python 3.9, the server is written in C++11, and the database is managed with MySQL.
+The project implements a partially secure file transfer protocol designed for transferring relatively small files. The server is written in Python 3.9, the client is written in C++11, and the database is managed with MySQL.
 
-The full project specifications can be found [here](readme/project_specifications.pdf).
+The full project specifications can be found [here](readme/project_specifications.pdf) (Hebrew).
 
 ## Table of Contents
 - [Features](#features)
@@ -20,8 +20,8 @@ The full project specifications can be found [here](readme/project_specification
 ## Features
 
 ### Registration
-- If the client does not have a registration file (`info.me`), it will read user information from the transfer file (`info.transfer`) and send a registration request to the server.
-- The server responds with a unique client ID, which the client stores in `info.me`.
+- If the client does not have a registration file (`me.info`), it will read user information from the transfer file (`transfer.info`) and send a registration request to the server.
+- The server responds with a unique client ID, which the client stores in `me.info`.
 
 ### Public Key Generation
 - Clients generate RSA key pairs (public and private keys) and send their public key to the server.
@@ -38,14 +38,53 @@ The full project specifications can be found [here](readme/project_specification
 
 ## Communication Protocol
 
-The communication protocol is binary and runs over TCP. Messages can contain a "payload" field for various content.
+### How the Server Works
 
-Here is a chart flow of a registration request:
+1. The server reads the port number from the `port.info` file to determine the port on which it should listen.
+
+2. It listens for incoming connection requests from clients.
+
+3. Upon establishing a connection with a client, the server handles various client requests and actions, including registration, file transfers, and re-connect requests.
+
+4. To manage client and file information, the server interacts with a database. It stores details about clients, such as their UUIDs, public keys, and last seen timestamps. Additionally, it maintains data regarding files, including file names, paths, and verification status.
+
+5. When a client requests to send a file, the server receives the file content, performs cryptographic operations to decrypt and verify the file's integrity using CRC, and then stores the file in the appropriate location.
+
+6. The server communicates with clients using a binary communication protocol, responding to various request codes and sending appropriate responses.
+
+7. Robust error handling and validation mechanisms are implemented to ensure the security and integrity of the system.
+
+### How the Client Works
+
+1. The client reads the server's information, such as its IP address and port, from the `transfer.info` and `me.info` files.
+
+2. It establishes a connection with the server using the provided server IP and port.
+
+3. The client reads its own information from the `me.info` file, including the file name of the executable to run.
+
+4. The client then enters batch mode, executing the specified executable and preparing to send data to the server.
+
+5. The client uses the CryptoPP library to perform cryptographic operations, including encryption and signing, on the data it intends to send to the server.
+
+6. It constructs a binary packet, adhering to the communication protocol, and sends it to the server over a TCP connection.
+
+7. The client may send various types of data to the server, such as file transfers, requests for information, and error responses.
+
+8. Error handling and validation mechanisms are implemented to handle server responses and ensure the reliability of the communication.
+
+9. The client may use a UUID as a unique identifier when communicating with the server.
+
+10. Data sent to the server is packaged, and special attention is given to endianness during data transmission.
+
+11. The client handles errors and responses from the server and maintains communication integrity.
+
+
+### Here is a chart flow of a registration request:
 
 <img src="readme/protocol-registration.jpg" width=50% height=50%>
 
 
-And here's what a reconnect looks like:
+### And here's what a reconnect looks like:
 
 <img src="readme/protocol-reconnect.jpg" width=50% height=50%>
 
@@ -130,47 +169,47 @@ Payload       | Variable response content based on the response code.
 #### Response 2100 – Successful Registration
 Field    | Meaning
 ---------|--------
-ID Client| 16 bytes - Unique client identifier.
+ID Client| Unique client identifier.
 
 #### Response 2101 – Registration Failed
 Field    | Meaning
 ---------|--------
-ID Client| 16 bytes - Unique client identifier.
+ID Client| Unique client identifier.
 
 #### Response 2102 – Received Public Key, Sending Encrypted AES Key
 Field          | Meaning
 ---------------|--------
-ID Client      | 16 bytes - Unique client identifier.
-Symmetric Key  | Variable - Encrypted symmetric key for the client.
+ID Client      | Unique client identifier.
+Symmetric Key  | Encrypted symmetric key for the client.
 
 #### Response 2103 – File Received Successfully with CRC
 Field           | Meaning
 ----------------|--------
-ID Client       | 16 bytes - Unique sender client identifier.
-Size Content    | 4 bytes - Size of the received file (after decryption).
-Name File       | 255 bytes - Name of the received file.
-CRC             | 4 bytes - Checksum.
+ID Client       | Unique sender client identifier.
+Size Content    | Size of the received file (after decryption).
+Name File       | Name of the received file.
+CRC             | Checksum.
 
 #### Response 2104 – Message Acknowledged, Thank You
 Field    | Meaning
 ---------|--------
-ID Client| 16 bytes - Unique client identifier.
+ID Client| Unique client identifier.
 
 #### Response 2105 – Approving Re-login Request, Sending Encrypted AES Key (Same as Code 2102)
 Field          | Meaning
 ---------------|--------
-ID Client      | 16 bytes - Unique client identifier.
-Symmetric Key  | Variable - Encrypted symmetric key for the client.
+ID Client      | Unique client identifier.
+Symmetric Key  | Encrypted symmetric key for the client.
 
 #### Response 2106 – Re-login Request Denied (Client Not Registered or Invalid Public Key)
 Field    | Meaning
 ---------|--------
-ID Client| 16 bytes - Unique client identifier.
+ID Client| Unique client identifier.
 
 #### Response 2107 – General Server Error (Unhandled Cases, e.g., Disk Space Exhausted or Database Failure)
 Field    | Meaning
 ---------|--------
-ID Client| 16 bytes - Unique client identifier.
+ID Client| Unique client identifier.
 
 ## Vulnerabilities and Weaknesses
 
