@@ -1,0 +1,3 @@
+In 1979, Bjarne Stroustrup, a Danish computer scientist, began work on "C with Classes", the predecessor to C++.
+
+Python is a high-level, general-purpose programming language. Its design philosophy emphasizes code readability with the use of significant indentation.
