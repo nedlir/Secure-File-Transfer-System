@@ -9,13 +9,45 @@ The project implements a partially secure file transfer protocol designed for tr
 The full project specifications can be found [here](readme/project_specifications.pdf) (Hebrew).
 
 ## Table of Contents
+- [Requirements](#requirements)
+- [Getting Started](#getting-started)
 - [Features](#features)
 - [Communication Protocol](#communication-protocol)
 - [Encryption](#encryption)
 - [Payload Content](#payload-content)
 - [Vulnerabilities and Weaknesses](#vulnerabilities-and-weaknesses)
-- [Requirements](#requirements)
-- [Getting Started](#getting-started)
+
+## Requirements
+
+To successfully use and compile the Secure File Transfer System, you will need the following software and libraries installed:
+
+### For the Python Server:
+
+- **Python**: Ensure you have Python 3.9 or a compatible version installed on your system.
+
+- **Crypto.Cipher**: You will need the Crypto.Cipher library for encryption. You can install it using pip with the following command: ```pip install pycryptodome```.
+
+
+### For the C++ Client:
+
+- **C++11**: The server is written in C++11, so you'll need a C++11 compatible compiler. Make sure you have a suitable compiler installed.
+
+- **Crypto++ (Version 8.7.0)**: Crypto++ is used for cryptographic operations. You can download and install Crypto++ from the official website: [Crypto++ Library (Version 8.7.0)](https://www.cryptopp.com/release870.html).
+
+- **Boost C++ Libraries (Version 1.81.0)**: Boost provides a wide range of useful C++ libraries. In this project it is used for the network handling. You can download and install Boost from the official website: [Boost C++ Libraries (Version 1.81.0)](https://www.boost.org/users/history/version_1_81_0.html).
+
+
+## Getting Started
+
+To use the project, follow these steps:
+
+1. Compile the client program using C++.
+
+2. Ensure that the `info.transfer` file is properly configured with the server's IP address, port number, client name, and file path.
+
+3. The Python server should also be running and configured to communicate with clients.
+
+4. Run the client program to register with the server (if not registered) or perform other file transfer operations.
 
 ## Features
 
@@ -221,36 +253,4 @@ ID Client| Unique client identifier.
 | Directory Traversal Attack     | Attacker may traverse the server's directory through toxic input.                              | Input validation and sanitization processes were applied to mitigate directory traversal attempts. User access was restricted to approved directories and files only.                                              |
 | Buffer/Integer Overflow             | Buffer and integer overflow issues in C++ code.                          | Strict bounds checking and data validation logic were introduced in the C++ code segments. Secure libraries and best practices for buffer management and integer handling were followed to eliminate overflow vulnerabilities of vulnerable methods. For exxample, using ```string``` instead of ```char*```.                        |
 | Impersonation                       | Man-in-the-Middle attacks.  | Even though this project is implementing a semi-TLS protocol. the UUID is initially available to an attacker that may listen to the client. As part of this project, a solution was not provided as the specifications of the project didn't stipulate it, but in a real scenario, an encryption of the UUID would be performed as well. |
-
-## Requirements
-
-To successfully use and compile the Secure File Transfer System, you will need the following software and libraries installed:
-
-### For the Python Server:
-
-- **Python**: Ensure you have Python 3.9 or a compatible version installed on your system.
-
-- **Crypto.Cipher**: You will need the Crypto.Cipher library for encryption. You can install it using pip with the following command: ```pip install pycryptodome```.
-
-
-### For the C++ Client:
-
-- **C++11**: The server is written in C++11, so you'll need a C++11 compatible compiler. Make sure you have a suitable compiler installed.
-
-- **Crypto++ (Version 8.7.0)**: Crypto++ is used for cryptographic operations. You can download and install Crypto++ from the official website: [Crypto++ Library (Version 8.7.0)](https://www.cryptopp.com/release870.html).
-
-- **Boost C++ Libraries (Version 1.81.0)**: Boost provides a wide range of useful C++ libraries. In this project it is used for the network handling. You can download and install Boost from the official website: [Boost C++ Libraries (Version 1.81.0)](https://www.boost.org/users/history/version_1_81_0.html).
-
-
-## Getting Started
-
-To use the project, follow these steps:
-
-1. Compile the client program using C++.
-
-2. Ensure that the `info.transfer` file is properly configured with the server's IP address, port number, client name, and file path.
-
-3. The Python server should also be running and configured to communicate with clients.
-
-4. Run the client program to register with the server (if not registered) or perform other file transfer operations.
 
